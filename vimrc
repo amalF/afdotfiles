@@ -1,6 +1,6 @@
 " vim: set foldmethod=marker foldlevel=0 nomodeline:
 " ============================================================================
-" .vimrc of Junegunn Choi {{{
+" .vimrc of Amal Feriani {{{
 " ============================================================================
 
 " Vim 8 defaults
@@ -24,22 +24,31 @@ endif
 
 " My plugins
 Plug 'junegunn/vim-easy-align'
-Plug 'junegunn/vim-github-dashboard'
+"Plug 'junegunn/vim-github-dashboard'
 Plug 'junegunn/vim-emoji'
 Plug 'junegunn/vim-pseudocl'
 Plug 'junegunn/vim-slash'
+"Find and replace
 Plug 'junegunn/vim-fnr'
 Plug 'junegunn/vim-peekaboo'
-Plug 'junegunn/vim-journal'
-Plug 'junegunn/seoul256.vim'
+"Plug 'junegunn/vim-journal'
+"Plug 'junegunn/seoul256.vim'
+
+"Browse commits
 Plug 'junegunn/gv.vim'
+
+"No distraction vim 
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-Plug 'junegunn/vader.vim'
+
+"Plug 'junegunn/vader.vim'
+"Fuzzy Search
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
 Plug 'junegunn/rainbow_parentheses.vim'
-Plug 'junegunn/heytmux'
+
+"Plug 'junegunn/heytmux'
 Plug 'junegunn/vim-after-object'
 if s:darwin
   Plug 'junegunn/vim-xmark'
@@ -58,6 +67,8 @@ Plug 'w0ng/vim-hybrid'
 Plug 'nightsense/snow'
 Plug 'nightsense/stellarized'
 Plug 'arcticicestudio/nord-vim'
+Plug 'jonathanfilip/lucius'
+Plug 'morhetz/gruvbox'
 
 " Edit
 Plug 'tpope/vim-repeat'
@@ -71,15 +82,9 @@ Plug 'AndrewRadev/switch.vim'
 Plug 'junegunn/vim-online-thesaurus'
 Plug 'sgur/vim-editorconfig'
 
-" function! BuildYCM(info)
-"   if a:info.status == 'installed' || a:info.force
-"     !./install.py --clang-completer --gocode-completer
-"   endif
-" endfunction
-" Plug 'Valloric/YouCompleteMe', { 'for': ['c', 'cpp'], 'do': function('BuildYCM') }
-
 " Plug 'SirVer/ultisnips'
 " Plug 'honza/vim-snippets'
+
 
 " Browsing
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
@@ -98,6 +103,7 @@ augroup END
 
 "Tags
 Plug 'ludovicchabant/vim-gutentags'
+
 if v:version >= 703
   Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 endif
@@ -139,8 +145,13 @@ Plug 'lyuts/vim-rtags', { 'for': ['c', 'cpp'] }
 " Lint
 Plug 'w0rp/ale'
 
+"Auto completion
+Plug 'davidhalter/jedi-vim'
+"Python mode
+Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 call plug#end()
 endif
+
 
 " }}}
 " ============================================================================
@@ -149,6 +160,8 @@ endif
 
 let mapleader      = ' '
 let maplocalleader = ' '
+let g:pymode_rope = 0
+let g:pymode_python = 'python3'
 
 augroup vimrc
   autocmd!
@@ -166,6 +179,7 @@ set backspace=indent,eol,start
 set timeoutlen=500
 set whichwrap=b,s
 set shortmess=aIT
+"set shortmess+=c
 set hlsearch " CTRL-L / CTRL-R W
 set incsearch
 set hidden
@@ -269,8 +283,11 @@ if has('gui_running')
   set guifont=Menlo:h14 columns=80 lines=40
   silent! colo seoul256-light
 else
-  silent! colo seoul256
+  silent! colo gruvbox
 endif
+
+"eNABLE TRUE COLOR
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 " }}}
 " ============================================================================
@@ -287,6 +304,8 @@ noremap <C-B> <C-U>
 " Open new line below and above current line
 nnoremap <leader>o o<esc>
 nnoremap <leader>O O<esc>
+
+
 
 " Save
 inoremap <C-s>     <C-O>:update<cr>
@@ -309,8 +328,7 @@ nnoremap <Leader>Q :qa!<cr>
 
 " Tags
 nnoremap <C-]> g<C-]>
-nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR>
-nnoremap g[ :pop<cr>
+nnoremap <C-\> :vsplit<CR>:exec("tag ".expand("<cword>"))<CR> nnoremap g[ :pop<cr>
 
 " Jump list (to newer position)
 nnoremap <C-p> <C-i>
@@ -711,6 +729,7 @@ function! s:run_this_script(output)
 endfunction
 nnoremap <silent> <F5> :call <SID>run_this_script(0)<cr>
 nnoremap <silent> <F6> :call <SID>run_this_script(1)<cr>
+nnoremap <buffer> <F5> :exec '!python' shellescape(@%, 1)<cr>
 
 " ----------------------------------------------------------------------------
 " <F8> | Color scheme selector
@@ -1568,7 +1587,7 @@ let g:clojure_maxlines = 60
 set lispwords+=match
 let g:clojure_fuzzy_indent_patterns = ['^with', '^def', '^let']
 
-" let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
+let g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
 let g:paredit_smartjump = 1
 
 " vim-cljfmt
