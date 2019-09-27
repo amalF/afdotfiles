@@ -2,7 +2,7 @@
 " ============================================================================
 " .vimrc of Amal Feriani {{{
 " ============================================================================
-
+set nocompatible
 " Vim 8 defaults
 unlet! skip_defaults_vim
 silent! source $VIMRUNTIME/defaults.vim
@@ -56,19 +56,9 @@ endif
 unlet! g:plug_url_format
 
 " Colors
-Plug 'tomasr/molokai'
-Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'morhetz/gruvbox'
-Plug 'yuttie/hydrangea-vim'
-Plug 'tyrannicaltoucan/vim-deep-space'
-Plug 'AlessandroYorba/Despacio'
-Plug 'cocopon/iceberg.vim'
-Plug 'w0ng/vim-hybrid'
-Plug 'nightsense/snow'
-Plug 'nightsense/stellarized'
-Plug 'arcticicestudio/nord-vim'
-Plug 'jonathanfilip/lucius'
-Plug 'morhetz/gruvbox'
+Plug 'altercation/vim-colors-solarized'
+Plug '29decidel/codeschool-vim-theme'
 
 " Edit
 Plug 'tpope/vim-repeat'
@@ -95,7 +85,7 @@ augroup nerd_loader
   autocmd!
   autocmd VimEnter * silent! autocmd! FileExplorer
   autocmd BufEnter,BufNew *
-        \  if isdirectory(expand('<amatch>'))
+        \| if isdirectory(expand('<amatch>'))
         \|   call plug#load('nerdtree')
         \|   execute 'autocmd! nerd_loader'
         \| endif
@@ -147,10 +137,17 @@ Plug 'w0rp/ale'
 
 "Auto completion
 Plug 'davidhalter/jedi-vim'
-"Python mode
-Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
 call plug#end()
 endif
+
+" Omnifunc for python
+"autocmd FileType python set omnifunc=pythoncomplete#Complete
+" Jedi-Vim plugin configs
+let g:SuperTabDefaultCompletionType = "context"
+let g:jedi#popup_on_dot = 1
+let s:python_version = 3
+
+
 
 
 " }}}
@@ -160,8 +157,6 @@ endif
 
 let mapleader      = ' '
 let maplocalleader = ' '
-let g:pymode_rope = 0
-let g:pymode_python = 'python3'
 
 augroup vimrc
   autocmd!
@@ -237,11 +232,6 @@ let &statusline = s:statusline_expr()
 set modelines=2
 set synmaxcol=1000
 
-" For MacVim
-set noimd
-set imi=1
-set ims=-1
-
 " ctags
 set tags=./tags;/
 
@@ -279,15 +269,18 @@ if exists('&fixeol')
   set nofixeol
 endif
 
-if has('gui_running')
-  set guifont=Menlo:h14 columns=80 lines=40
-  silent! colo seoul256-light
-else
-  silent! colo gruvbox
-endif
+"if has('gui_running')
+"  set guifont=Menlo:h14 columns=80 lines=40
+"  silent! colo seoul256-light
+"else
+"  silent! colo gruvbox
+"endif
+set background=dark
+colorscheme gruvbox
 
 "eNABLE TRUE COLOR
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
 
 " }}}
 " ============================================================================
