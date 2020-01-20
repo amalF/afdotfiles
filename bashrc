@@ -1,15 +1,15 @@
 # .bashrc for OS X and Ubuntu
 # ====================================================================
-# - https://github.com/junegunn/dotfiles
-# - junegunn.c@gmail.com
 
 # System default
 # --------------------------------------------------------------------
-
+source ~/.dlamirc  
 export PLATFORM=$(uname -s)
 [ -f /etc/bashrc ] && . /etc/bashrc
 
 BASE=$(dirname $(readlink $BASH_SOURCE))
+
+
 
 # Options
 # --------------------------------------------------------------------
