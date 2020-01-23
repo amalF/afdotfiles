@@ -21,6 +21,7 @@ ln -sf $BASE/vimrc ~/.vimrc
 mkdir -p ~/.config/nvim/autoload
 ln -sf $BASE/vimrc ~/.config/nvim/init.vim
 ln -sf ~/.vim/autoload/plug.vim ~/.config/nvim/autoload/
+pip install pynvim
 
 vim +PlugInstall +qall
 

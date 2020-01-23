@@ -3,13 +3,10 @@
 
 # System default
 # --------------------------------------------------------------------
-source ~/.dlamirc  
 export PLATFORM=$(uname -s)
 [ -f /etc/bashrc ] && . /etc/bashrc
 
 BASE=$(dirname $(readlink $BASH_SOURCE))
-
-
 
 # Options
 # --------------------------------------------------------------------
@@ -41,14 +38,8 @@ export HISTTIMEFORMAT="%Y/%m/%d %H:%M:%S:   "
 [ -z "$TMPDIR" ] && TMPDIR=/tmp
 
 ### Global
-export GOPATH=~/gosrc
-mkdir -p $GOPATH
-if [ "$PLATFORM" = 'Darwin' ]; then
-  export PATH=~/bin:/usr/local/opt/ruby/bin:$GOPATH/bin:$PATH
-else
-  export PATH=~/bin:/usr/bin:/bin
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.:/usr/local/lib
-fi
+export PATH=~/bin:/usr/bin:/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.:/usr/local/lib
 export EDITOR=vim
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
@@ -123,18 +114,12 @@ elif [ "$PLATFORM" = Darwin ]; then
   alias ls='ls -G'
 fi
 
-### Ruby
-alias bert='bundle exec rake test'
-alias ber='bundle exec rake'
-alias be='bundle exec'
-
-
 # Prompt
 # --------------------------------------------------------------------
 
 if [ "$PLATFORM" = Linux ]; then
-  PS1="\[\e[1;38m\]\u\[\e[1;34m\]@\[\e[1;31m\]\h\[\e[1;30m\]:"
-  PS1="$PS1\[\e[0;38m\]\w\[\e[1;35m\]> \[\e[0m\]"
+  PS1="\[\e[1;36m\]\u\[\e[1;36m\]@\[\e[1;36m\]\h\[\e[1;38m\]:"
+  PS1="$PS1\[\e[1;35m\]\w\[\e[1;38m\]> \[\e[0m\]"
 else
   ### git-prompt
   __git_ps1() { :;}
@@ -254,18 +239,6 @@ cheap-bin() {
 EXTRA=$BASE/bashrc-extra
 [ -f "$EXTRA" ] && source "$EXTRA"
 
-
-if [ "$PLATFORM" = 'Darwin' ]; then
-  resizes() {
-    mkdir -p out &&
-    for jpg in *.JPG; do
-      echo $jpg
-      [ -e out/$jpg ] || sips -Z 2048 --setProperty formatOptions 80 $jpg --out out/$jpg
-    done
-  }
-
-  j() { export JAVA_HOME=$(/usr/libexec/java_home -v1.$1); }
-fi
 
 jfr() {
   if [ $# -ne 1 ]; then
@@ -478,15 +451,6 @@ c() {
   sed 's#.*\(https*://\)#\1#' | xargs open
 }
 
-# so - my stackoverflow favorites
-so() {
-  $BASE/bin/stackoverflow-favorites |
-    fzf --ansi --reverse --with-nth ..-2 --tac --tiebreak index |
-    awk '{print $NF}' | while read -r line; do
-      open "$line"
-    done
-}
-
 # GIT heart FZF
 # -------------
 
@@ -551,3 +515,5 @@ if [[ $- =~ i ]]; then
   bind '"\C-g\C-s": "$(gs)\e\C-e\er"'
 fi
 
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
