@@ -1,5 +1,6 @@
 " =======================================================================
 " .vimrc for Amal
+" This was heavily inspired by https://github.com/junegunn/dotfiles/blob/master/vimrc
 " =======================================================================
 
 
@@ -53,6 +54,10 @@ Plug 'altercation/solarized'
 
 " Git integration
 Plug 'tpope/vim-fugitive'
+
+  nmap <Leader>g :Gstatus<CR>gg<c-n>
+  nnoremap <Leader>d :Gdiff<CR>
+" browse git commits
 Plug 'junegunn/gv.vim'
 Plug 'mhinz/vim-signify'
 
@@ -62,6 +67,12 @@ Plug 'mhinz/vim-signify'
 " Fuzzy search
 Plug 'junegunn/fzf', { 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
+" Markdown
+Plug 'iamcco/markdown-preview.nvim', { 'do': ':call mkdp#util#install()', 'for': 'markdown', 'on': 'MarkdownPreview' }
+
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
 
 call plug#end()
 
@@ -81,13 +92,17 @@ endif
 colorscheme gruvbox
 
 set nu
-" set autoindent
+set autoindent
+set cindent
+set shiftwidth=2
+set expandtab
+
 
 " Mouse
 set mouse=a
 
 " 80 chars/line
-set textwidth=80
+set textwidth=0
 if exists('&colorcolumn')
 	set colorcolumn=80
 endif
@@ -234,6 +249,7 @@ let g:ale_linters = {'python': []}
 let g:ale_fixers = {'python': ['prettier','eslint']}
 let g:ale_completion_enabled = 0
 let g:ale_lint_delay = 750
+let g:airline#extensions#ale#enabled = 1
 highlight link ALEErrorSign GruvboxRedSign
 highlight link ALEWarningSign GruvboxYellowSign
 
@@ -241,6 +257,79 @@ highlight link ALEWarningSign GruvboxYellowSign
 nmap ]a <Plug>(ale_next_wrap)
 nmap [a <Plug>(ale_previous_wrap)
 nmap ]d <Plug>(ale_go_to_definition)
+
+
+
+" -----------------------------------------------------------------------------
+"  Markdown
+"  ----------------------------------------------------------------------------
+
+nnoremap <leader>1 m`yypVr=``
+nnoremap <leader>2 m`yypVr-``
+nnoremap <leader>3 m`^i### <esc>``4l
+nnoremap <leader>4 m`^i#### <esc>``5l
+nnoremap <leader>5 m`^i##### <esc>``6l
+
+"------------------------------------------------------------------------------
+" Markdown Preview
+" -----------------------------------------------------------------------------
+
+let g:mkdp_refresh_slow=1
+let g:mkdp_markdown_css="/home/amalferiani/afdotfiles/github-markdown.css"
+
+
+" -----------------------------------------------------------------------------
+"  Run script
+"  ----------------------------------------------------------------------------
+"
+function! s:run_this_script(output)
+  let head   = getline(1)
+  let pos    = stridx(head, '#!')
+  let file   = expand('%:p')
+  let ofile  = tempname()
+  let rdr    = " 2>&1 | tee ".ofile
+  let win    = winnr()
+  let prefix = a:output ? 'silent !' : '!'
+  " Shebang found
+  if pos != -1
+    execute prefix.strpart(head, pos + 2).' '.file.rdr
+  " Shebang not found but executable
+  elseif executable(file)
+    execute prefix.file.rdr
+  elseif &filetype == 'python'
+    execute prefix.'/usr/bin/python3 '.file.rdr
+  elseif &filetype == 'tex'
+    execute prefix.'latex '.file. '; [ $? -eq 0 ] && xdvi '. expand('%:r').rdr
+  elseif &filetype == 'dot'
+    let svg = expand('%:r') . '.svg'
+    let png = expand('%:r') . '.png'
+    " librsvg >> imagemagick + ghostscript
+    execute 'silent !dot -Tsvg '.file.' -o '.svg.' && '
+          \ 'rsvg-convert -z 2 '.svg.' > '.png.' && open '.png.rdr
+  else
+    return
+  end
+  redraw!
+  if !a:output | return | endif
+
+  " Scratch buffer
+  if exists('s:vim_exec_buf') && bufexists(s:vim_exec_buf)
+    execute bufwinnr(s:vim_exec_buf).'wincmd w'
+    %d
+  else
+    silent!  bdelete [vim-exec-output]
+    silent!  vertical botright split new
+    silent!  file [vim-exec-output]
+    setlocal buftype=nofile bufhidden=wipe noswapfile
+    let      s:vim_exec_buf = winnr()
+  endif
+  execute 'silent! read' ofile
+  normal! gg"_dd
+  execute win.'wincmd w'
+endfunction
+
+"nnoremap <silent> <F5> :call <SID>run_this_script(0)<cr>
+nnoremap <silent> <F6> :call <SID>run_this_script(1)<cr>
 
 
 " }}}
