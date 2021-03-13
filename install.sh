@@ -21,7 +21,9 @@ ln -sf $BASE/vimrc ~/.vimrc
 mkdir -p ~/.config/nvim/autoload
 ln -sf $BASE/vimrc ~/.config/nvim/init.vim
 ln -sf ~/.vim/autoload/plug.vim ~/.config/nvim/autoload/
+# install pynvim for jedi
 pip install pynvim
+pip3 install pynvim
 
 vim +PlugInstall +qall
 
