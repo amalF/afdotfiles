@@ -245,8 +245,9 @@ nnoremap <leader>t :NERDTreeToggle<cr>
 " ----------------------------------------------------------------------------
 " ALE
 " ----------------------------------------------------------------------------
-let g:ale_linters = {'python': []}
-let g:ale_fixers = {'python': ['prettier','eslint']}
+let g:ale_linters = {'python': ['pylint', 'flake8']}
+let g:ale_fixers = {'python': ['autopep8'], '*': ['remove_trailing_lines', 'trim_whitespace']}
+let g:ale_fix_on_save = 1
 let g:ale_completion_enabled = 0
 let g:ale_lint_delay = 750
 let g:airline#extensions#ale#enabled = 1
@@ -297,7 +298,8 @@ function! s:run_this_script(output)
   elseif executable(file)
     execute prefix.file.rdr
   elseif &filetype == 'python'
-    execute prefix.'/usr/bin/python3 '.file.rdr
+    " execute prefix.'/usr/bin/python3 '.file.rdr
+    execute '!python % '.file.rdr
   elseif &filetype == 'tex'
     execute prefix.'latex '.file. '; [ $? -eq 0 ] && xdvi '. expand('%:r').rdr
   elseif &filetype == 'dot'
@@ -328,7 +330,7 @@ function! s:run_this_script(output)
   execute win.'wincmd w'
 endfunction
 
-"nnoremap <silent> <F5> :call <SID>run_this_script(0)<cr>
+nnoremap <silent> <F5> :call <SID>run_this_script(0)<cr>
 nnoremap <silent> <F6> :call <SID>run_this_script(1)<cr>
 
 
