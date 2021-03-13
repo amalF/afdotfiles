@@ -38,11 +38,12 @@ export HISTTIMEFORMAT="%Y/%m/%d %H:%M:%S:   "
 [ -z "$TMPDIR" ] && TMPDIR=/tmp
 
 ### Global
-export PATH=~/bin:/usr/bin:/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.:/usr/local/lib
+export PATH=~/bin:/usr/bin:/bin:/usr/local/cuda/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.:/usr/local/lib:/usr/local/cuda/lib64:/usr/lib/x86_64-linux-gnu
 export EDITOR=vim
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
 
 ### OS X
 export COPYFILE_DISABLE=true
@@ -60,11 +61,14 @@ alias cd..='cd ..'
 alias l='ls -alF'
 alias ll='ls -l'
 alias vi='vim'
+alias nvim='nvim'
 alias vi2='vi -O2 '
 alias hc="history -c"
 alias which='type -p'
 alias k5='kill -9 %%'
 alias gv='vim +GV +"autocmd BufWipeout <buffer> qall"'
+alias vtf2='source ~/tf2/bin/activate'
+alias vtf1='source ~/tf1/bin/activate'
 ext() {
   ext-all --exclude .git --exclude target --exclude "*.log"
 }
